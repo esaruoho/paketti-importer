@@ -31,14 +31,14 @@ jobs:
 
       # 3. Remove the definitions folder if present
       - name: Remove definitions folder
-        run: rm -rf org.lackluster.Paketti_Importer.xrnx/definitions
+        run: rm -rf org.lackluster.Paketti_File_Format_Importer.xrnx/definitions
 
       # 4. Generate a timestamp-based tag and filename
       - name: Generate Tag and Filename
         run: |
           TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
           echo "TAG_NAME=$TIMESTAMP" >> $GITHUB_ENV
-          echo "FILENAME=org.lackluster.Paketti_Importer_V3.54_${TIMESTAMP}.xrnx" >> $GITHUB_ENV
+          echo "FILENAME=org.lackluster.Paketti_File_Format_Importer_V3.54_${TIMESTAMP}.xrnx" >> $GITHUB_ENV
 
       # 5. Zip the package using the dynamic filename
       - name: Zip XRNX Package
@@ -72,7 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.TAG_NAME }}
-          release_name: Paketti_Importer V3.54 – ${{ env.TAG_NAME }}
+          release_name: Paketti_File_Format_Importer V3.54 – ${{ env.TAG_NAME }}
           draft: false
           prerelease: false
 
