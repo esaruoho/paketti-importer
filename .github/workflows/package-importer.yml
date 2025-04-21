@@ -1,5 +1,10 @@
 name: Package Paketti_Importer as .XRNX
 
+# <-- add this section
+permissions:
+  contents: write     # allows pushing tags, commits, release artifacts
+  packages: write     # if you also ever push to GitHub Packages
+
 on:
   workflow_dispatch:
   push:
