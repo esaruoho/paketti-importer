@@ -1,4 +1,4 @@
-# paketti-importer
+# Paketti File Format Importer
 The Import features of Paketti, my quality-of-life-tool for Renoise.
 
 # Supported Formats
