@@ -21,7 +21,7 @@ Stay tuned.
 
 # What is Paketti?
 
-Please check out http://github.com/esaruoho/paketti/
+Please check out [http://github.com/esaruoho/paketti/](http://github.com/esaruoho/paketti/)
 
 # Support
 
