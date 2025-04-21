@@ -14,6 +14,9 @@ The Import features of Paketti, my quality-of-life-tool for Renoise.
 
 Stay tuned.
 
+# Discord
+- [Discord](https://discord.gg/Qex7k5j4wG)
+
 # What is Paketti?
 
 Please check out http://github.com/esaruoho/paketti/
