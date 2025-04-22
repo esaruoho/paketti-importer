@@ -9,9 +9,10 @@ require "importers/s1000p"
 require "importers/s1000s"
 
 -- Paketti preferences
-renoise.tool():add_preferences {
+preferences = renoise.Document.create("ScriptingToolPreferences") {
   pakettiOverwriteCurrent = false  -- false = create new instrument (default), true = overwrite current
 }
+renoise.tool().preferences = preferences
 
 print ("Paketti File Format Import tool has loaded")
 
