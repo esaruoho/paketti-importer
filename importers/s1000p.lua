@@ -1,5 +1,4 @@
 ---@diagnostic disable: lowercase-global
-require("s1000s")
 
 function s1000_loadinstrument(filename)
   -- Main import function for .p files
