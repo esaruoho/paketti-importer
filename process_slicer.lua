@@ -2,6 +2,10 @@
 process_slicer.lua
 ============================================================================]]--
 
+_AUTO_RELOAD_DEBUG = true
+
+require "renoise.http"
+
 --[[
 ProcessSlicer for Paketti - allows slicing up long-running operations into smaller chunks
 to maintain UI responsiveness and show progress.
@@ -129,4 +133,6 @@ function ProcessSlicer:create_dialog(title)
     title or "Processing...", dialog_content)
     
   return dialog, vb
-end 
+end
+
+return ProcessSlicer 

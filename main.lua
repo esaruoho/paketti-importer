@@ -1,7 +1,9 @@
-require "importers/PakettiSF2Loader"
-require "importers/PakettiREXLoader"
-require "importers/PakettiRX2Loader"
-require "importers/PakettiPTILoader"
+local separator = package.config:sub(1,1)  -- Gets \ for Windows, / for Unix
+require "process_slicer"
+require "importers" .. separator .. "PakettiSF2Loader"
+require "importers" .. separator .. "PakettiREXLoader"
+require "importers" .. separator .. "PakettiRX2Loader"
+require "importers" .. separator .. "PakettiPTILoader"
 
 print ("Paketti File Format Import tool has loaded")
 
