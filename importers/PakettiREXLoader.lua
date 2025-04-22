@@ -270,14 +270,14 @@ function rex_loadsample(filename)
   -- Insert slice markers at the actual positions
   dprint("Adding slice markers")
   local sample = renoise.song().selected_instrument.samples[1]
-  sample.autofade = preferences.pakettiLoaderAutofade.value
-  sample.autoseek = preferences.pakettiLoaderAutoseek.value
-  sample.loop_mode = preferences.pakettiLoaderLoopMode.value
-  sample.interpolation_mode = preferences.pakettiLoaderInterpolation.value
-  sample.oversample_enabled = preferences.pakettiLoaderOverSampling.value
-  sample.oneshot = preferences.pakettiLoaderOneshot.value
-  sample.new_note_action = preferences.pakettiLoaderNNA.value
-  sample.loop_release = preferences.pakettiLoaderLoopExit.value
+  sample.autofade = true
+  sample.autoseek = false
+  sample.loop_mode = 1
+  sample.interpolation_mode = renoise.Sample.INTERPOLATE_SINC
+  sample.oversample_enabled = true
+  sample.oneshot = false
+  -- sample.new_note_action = preferences.pakettiLoaderNNA.value
+  sample.loop_release = false
 
   -- First marker at the very beginning
   new_smp:insert_slice_marker(1)

@@ -361,14 +361,13 @@ local function pti_loadsample(filepath)
     for i = 1, #smp.slice_markers do
       local slice_sample = renoise.song().selected_instrument.samples[i + 1]
       if slice_sample then
-        slice_sample.oversample_enabled = preferences.pakettiLoaderOverSampling.value
-        slice_sample.autofade = preferences.pakettiLoaderAutofade.value
-        slice_sample.autoseek = preferences.pakettiLoaderAutoseek.value
-        slice_sample.interpolation_mode = preferences.pakettiLoaderInterpolation.value
-        slice_sample.oversample_enabled = preferences.pakettiLoaderOverSampling.value
-        slice_sample.oneshot = preferences.pakettiLoaderOneshot.value
-        slice_sample.new_note_action = preferences.pakettiLoaderNNA.value
-
+        slice_sample.oversample_enabled = true
+        slice_sample.autofade = false
+        slice_sample.autoseek = false
+        slice_sample.interpolation_mode = renoise.Sample.INTERPOLATE_SINC
+        slice_sample.oversample_enabled = true
+        slice_sample.oneshot = false
+        slice_sample.new_note_action = 0
       end
     end
 
@@ -382,34 +381,41 @@ local function pti_loadsample(filepath)
       for i = 1, #smp.slice_markers do
         local slice_sample = renoise.song().selected_instrument.samples[i + 1]
         if slice_sample then
-          slice_sample.oversample_enabled = preferences.pakettiLoaderOverSampling.value
-          slice_sample.autofade = preferences.pakettiLoaderAutofade.value
-          slice_sample.autoseek = preferences.pakettiLoaderAutoseek.value
-          slice_sample.interpolation_mode = preferences.pakettiLoaderInterpolation.value
-          slice_sample.oversample_enabled = preferences.pakettiLoaderOverSampling.value
-          slice_sample.oneshot = preferences.pakettiLoaderOneshot.value
-          slice_sample.new_note_action = preferences.pakettiLoaderNNA.value
-        
-
+          slice_sample.oversample_enabled = true
+          slice_sample.autofade = false
+          slice_sample.autoseek = false
+          slice_sample.interpolation_mode = renoise.Sample.INTERPOLATE_SINC
+          slice_sample.oversample_enabled = true
+          slice_sample.oneshot = false
+          slice_sample.new_note_action = 0
         end
       end
     end
   end
 
-  -- Apply Paketti Loader preferences to the sample
-  smp.autofade = preferences.pakettiLoaderAutofade.value
-  smp.autoseek = preferences.pakettiLoaderAutoseek.value
-  smp.interpolation_mode = preferences.pakettiLoaderInterpolation.value
-  smp.oversample_enabled = preferences.pakettiLoaderOverSampling.value
-  smp.oneshot = preferences.pakettiLoaderOneshot.value
-  smp.new_note_action = preferences.pakettiLoaderNNA.value
-  -- smp.loop_release = preferences.pakettiLoaderLoopExit.value
+  -- Apply base settings
+  smp.autofade = true
+  smp.autoseek = false
+  smp.interpolation_mode = renoise.Sample.INTERPOLATE_SINC
+  smp.oversample_enabled = true
+  smp.oneshot = false
+  smp.loop_release = false
 
   local total_slices = #renoise.song().selected_instrument.samples[1].slice_markers
   if total_slices > 0 then
     renoise.app():show_status(string.format("PTI imported with %d slice markers", total_slices))
   else
     renoise.app():show_status("PTI imported successfully")
+  end
+
+  -- Add Instr Macro device
+  if renoise.song().selected_track.type == 2 then 
+    renoise.app():show_status("*Instr. Macro Device will not be added to the Master track.") 
+  else
+    loadnative("Audio/Effects/Native/*Instr. Macros") 
+    local macro_device = renoise.song().selected_track:device(2)
+    macro_device.display_name = string.format("%02X", renoise.song().selected_instrument_index - 1) .. " " .. clean_name
+    renoise.song().selected_track.devices[2].is_maximized = false
   end
 end
 
