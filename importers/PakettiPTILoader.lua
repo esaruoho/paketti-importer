@@ -470,12 +470,3 @@ local function pti_loadsample(filepath)
   return true
 end
 
-local pti_integration = {
-  category = "sample",
-  extensions = { "pti" },
-  invoke = pti_loadsample
-}
-
-if not renoise.tool():has_file_import_hook("sample", { "pti" }) then
-  renoise.tool():add_file_import_hook(pti_integration)
-end

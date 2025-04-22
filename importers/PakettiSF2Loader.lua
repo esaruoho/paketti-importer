@@ -950,23 +950,8 @@ local function import_sf2_multitimbral(filepath)
 end
 
 --------------------------------------------------------------------------------
--- Register
+-- Register menu entries
 --------------------------------------------------------------------------------
-if renoise.tool():has_file_import_hook("sample", {"sf2"}) then
-  renoise.tool():remove_file_import_hook("sample", {"sf2"})
-  print("Removed old SF2 Import Hook")
-end
-
-local hook = {
-  category = "sample",
-  extensions = {"sf2"},
-  invoke = import_sf2
-}
-
-if not renoise.tool():has_file_import_hook("sample", {"sf2"}) then
-  renoise.tool():add_file_import_hook(hook)
-end
-
 renoise.tool():add_menu_entry {
   name = "Main Menu:Tools:Import SF2 (Single XRNI per Preset)",
   invoke = function()

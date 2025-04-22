@@ -1,9 +1,12 @@
 local separator = package.config:sub(1,1)  -- Gets \ for Windows, / for Unix
 require "process_slicer"
+require "utils"
 require "importers/PakettiSF2Loader"
 require "importers/PakettiREXLoader"
 require "importers/PakettiRX2Loader"
 require "importers/PakettiPTILoader"
+require "importers/s1000p"
+require "importers/s1000s"
 
 print ("Paketti File Format Import tool has loaded")
 
@@ -193,3 +196,73 @@ function pakettiPreferencesDefaultInstrumentLoader()
   print("Loading instrument from path: " .. defaultInstrument)
   renoise.app():load_instrument(defaultInstrument)
 end
+
+-- Remove any existing hooks first
+if renoise.tool():has_file_import_hook("instrument", {"p", "P1", "P3"}) then
+  renoise.tool():remove_file_import_hook("instrument", {"p", "P1", "P3"})
+end
+
+if renoise.tool():has_file_import_hook("sample", {"s", "S1", "S3"}) then
+  renoise.tool():remove_file_import_hook("sample", {"s", "S1", "S3"})
+end
+
+if renoise.tool():has_file_import_hook("sample", {"sf2"}) then
+  renoise.tool():remove_file_import_hook("sample", {"sf2"})
+end
+
+if renoise.tool():has_file_import_hook("sample", {"rex"}) then
+  renoise.tool():remove_file_import_hook("sample", {"rex"})
+end
+
+if renoise.tool():has_file_import_hook("sample", {"rx2"}) then
+  renoise.tool():remove_file_import_hook("sample", {"rx2"})
+end
+
+if renoise.tool():has_file_import_hook("sample", {"pti"}) then
+  renoise.tool():remove_file_import_hook("sample", {"pti"})
+end
+
+-- Register all hooks directly
+-- AKAI S1000/S3000 Program files
+renoise.tool():add_file_import_hook({
+  category = "instrument",
+  extensions = { "p", "P1", "P3" },
+  invoke = s1000_loadinstrument
+})
+
+-- AKAI S1000/S3000 Sample files
+renoise.tool():add_file_import_hook({
+  category = "sample",
+  extensions = { "s", "S1", "S3" },
+  invoke = s1000_loadsample
+})
+
+-- SF2 files
+renoise.tool():add_file_import_hook({
+  category = "sample",
+  extensions = { "sf2" },
+  invoke = sf2_loadsample
+})
+
+-- REX files
+renoise.tool():add_file_import_hook({
+  category = "sample",
+  extensions = { "rex" },
+  invoke = rex_loadsample
+})
+
+-- RX2 files
+renoise.tool():add_file_import_hook({
+  category = "sample",
+  extensions = { "rx2" },
+  invoke = rx2_loadsample
+})
+
+-- PTI files
+renoise.tool():add_file_import_hook({
+  category = "sample",
+  extensions = { "pti" },
+  invoke = pti_loadsample
+})
+
+print("Paketti File Format Import tool: All import hooks registered")

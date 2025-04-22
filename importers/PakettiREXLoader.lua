@@ -333,16 +333,6 @@ function rex_loadsample(filename)
   return true
 end
 
-local rex_integration = {
-  category = "sample",
-  extensions = { "rex" },
-  invoke = rex_loadsample
-}
-
-if not renoise.tool():has_file_import_hook("sample", { "rex" }) then
-  renoise.tool():add_file_import_hook(rex_integration)
-end
-
 -- DEBUG TOOL: Dump REX structure to .txt
 local function bytes_to_hexstr(data)
   local out = {}
