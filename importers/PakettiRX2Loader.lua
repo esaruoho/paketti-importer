@@ -40,7 +40,7 @@ local function setup_os_specific_paths()
     -- macOS specific paths and setup
     local bundle_path = renoise.tool().bundle_path .. "rx2/REX Shared Library.bundle"
     rex_decoder_path = renoise.tool().bundle_path .. "rx2/rex2decoder_mac"
-    sdk_path = preferences.pakettiREXBundlePath.value
+    sdk_path = renoise.tool().bundle_path .. "rx2"
     
     print("Bundle path: " .. bundle_path)
     
@@ -205,17 +205,14 @@ end
     print("Warning: Could not load slice markers from file:", txt_output)
   end
 
-  -- Set additional sample properties from preferences
-  if preferences then
-    smp.autofade = preferences.pakettiLoaderAutofade.value
-    smp.autoseek = preferences.pakettiLoaderAutoseek.value
-    smp.loop_mode = preferences.pakettiLoaderLoopMode.value
-    smp.interpolation_mode = preferences.pakettiLoaderInterpolation.value
-    smp.oversample_enabled = preferences.pakettiLoaderOverSampling.value
-    smp.oneshot = preferences.pakettiLoaderOneshot.value
-    smp.new_note_action = preferences.pakettiLoaderNNA.value
-    smp.loop_release = preferences.pakettiLoaderLoopExit.value
-  end
+  -- Set sample properties
+  smp.autofade = true
+  smp.autoseek = false
+  smp.loop_mode = 1
+  smp.interpolation_mode = renoise.Sample.INTERPOLATE_SINC
+  smp.oversample_enabled = true
+  smp.oneshot = false
+  smp.loop_release = false
   
   renoise.app():show_status("RX2 imported successfully with slice markers")
   return true

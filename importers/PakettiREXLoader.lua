@@ -276,7 +276,6 @@ function rex_loadsample(filename)
   sample.interpolation_mode = renoise.Sample.INTERPOLATE_SINC
   sample.oversample_enabled = true
   sample.oneshot = false
-  -- sample.new_note_action = preferences.pakettiLoaderNNA.value
   sample.loop_release = false
 
   -- First marker at the very beginning
@@ -311,9 +310,8 @@ function rex_loadsample(filename)
   dprint(string.format("Added %d slice markers in total (including start)", #slice_offsets + 1))
 
   -- Enable oversampling for all slices
-  for i = 1, #new_smp.slice_markers do
-    renoise.song().selected_instrument.samples[i+1].oversample_enabled = preferences.pakettiLoaderOverSampling.value
-    dprint(string.format("Enabled oversampling for slice %d", i))
+  for i = 1, #renoise.song().selected_instrument.samples[1].slice_markers do
+    renoise.song().selected_instrument.samples[i+1].oversample_enabled = true
   end
 
   -- Set names
@@ -325,14 +323,12 @@ function rex_loadsample(filename)
   os.remove(aiff_copy)
   dprint("Import completed successfully")
 
-  if preferences.pakettiLoaderDontCreateAutomationDevice.value == false then 
-  if renoise.song().selected_track.type == 2 then renoise.app():show_status("*Instr. Macro Device will not be added to the Master track.") return else
-    loadnative("Audio/Effects/Native/*Instr. Macros") 
-    local macro_device = renoise.song().selected_track:device(2)
-    macro_device.display_name = string.format("%02X", renoise.song().selected_instrument_index - 1) .. " " .. get_clean_filename(filename)
-    renoise.song().selected_track.devices[2].is_maximized = false
-  end
-end
+  -- Always create automation device
+  loadnative("Audio/Effects/Native/*Instr. Macros") 
+  local macro_device = renoise.song().selected_track:device(2)
+  macro_device.display_name = string.format("%02X", renoise.song().selected_instrument_index - 1) .. " " .. get_clean_filename(filename)
+  renoise.song().selected_track.devices[2].is_maximized = false
+
   renoise.app():show_status(string.format("REX cleaned and imported with %d slice markers", #slice_offsets))
   return true
 end
