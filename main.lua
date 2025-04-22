@@ -1,10 +1,9 @@
-require "importers/PakettiSF2Loader.lua"
-require "importers/PakettiREXLoader.lua"
-require "importers/PakettiRX2Loader.lua"
-require "importers/PakettiPTILoader.lua"
+require "importers/PakettiSF2Loader"
+require "importers/PakettiREXLoader"
+require "importers/PakettiRX2Loader"
+require "importers/PakettiPTILoader"
 
-
-
+print ("Paketti File Format Import tool has loaded")
 
 local bit = require("bit")
 
