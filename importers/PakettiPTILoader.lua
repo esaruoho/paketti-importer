@@ -126,7 +126,6 @@ function pti_loadsample(filepath)
         buffer:set_sample_data(i - 1, 1, sampleR / 32768)
       end)
       if not success then
-        buffer:cancel_sample_data_changes()
         renoise.app():show_error("Failed to write stereo sample data: " .. tostring(err))
         return false
       end
@@ -143,7 +142,6 @@ function pti_loadsample(filepath)
         buffer:set_sample_data(i - 1, 0, sample / 32768)
       end)
       if not success then
-        buffer:cancel_sample_data_changes()
         renoise.app():show_error("Failed to write mono sample data: " .. tostring(err))
         return false
       end
