@@ -20,9 +20,12 @@ function rex_loadsample(filename)
   -- Define constants
   local header_len = 256  -- Length of each header in frames
   
-  -- Initialize with Paketti default instrument
-  renoise.song():insert_instrument_at(renoise.song().selected_instrument_index+1)
-  renoise.song().selected_instrument_index = renoise.song().selected_instrument_index+1
+  -- Handle instrument creation based on preference
+  if not renoise.tool().preferences.pakettiOverwriteCurrent then
+    -- Create new instrument (default behavior)
+    renoise.song():insert_instrument_at(renoise.song().selected_instrument_index+1)
+    renoise.song().selected_instrument_index = renoise.song().selected_instrument_index+1
+  end
 
   pakettiPreferencesDefaultInstrumentLoader()
   local smp = song.selected_sample

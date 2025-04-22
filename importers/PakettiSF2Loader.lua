@@ -623,8 +623,14 @@ local function import_sf2(file_path)
         (renoise.tool().bundle_path .. "Presets/12st_Pitchbend_Drumkit_C0.xrni") or
         "Presets/12st_Pitchbend.xrni"
 
-      song:insert_instrument_at(song.selected_instrument_index + 1)
-      song.selected_instrument_index = song.selected_instrument_index + 1
+      -- Handle instrument creation based on preference
+      if not renoise.tool().preferences.pakettiOverwriteCurrent then
+        -- Create new instrument (default behavior)
+        song:insert_instrument_at(song.selected_instrument_index + 1)
+        song.selected_instrument_index = song.selected_instrument_index + 1
+      end
+
+      -- Load Paketti default instrument configuration
       renoise.app():load_instrument(preset_file)
 
       local r_inst = song.selected_instrument

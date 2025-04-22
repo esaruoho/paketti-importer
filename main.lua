@@ -8,6 +8,11 @@ require "importers/PakettiPTILoader"
 require "importers/s1000p"
 require "importers/s1000s"
 
+-- Paketti preferences
+renoise.tool():add_preferences {
+  pakettiOverwriteCurrent = false  -- false = create new instrument (default), true = overwrite current
+}
+
 print ("Paketti File Format Import tool has loaded")
 
 local bit = require("bit")

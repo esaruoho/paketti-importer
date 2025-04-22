@@ -38,6 +38,16 @@ function s1000_loadinstrument(filename)
 
   print("s1000_loadinstrument: inst_name", inst_name)
 
+  -- Handle instrument creation based on preference
+  if not renoise.tool().preferences.pakettiOverwriteCurrent then
+    -- Create new instrument (default behavior)
+    renoise.song():insert_instrument_at(renoise.song().selected_instrument_index + 1)
+    renoise.song().selected_instrument_index = renoise.song().selected_instrument_index + 1
+  end
+
+  -- Load Paketti default instrument configuration
+  pakettiPreferencesDefaultInstrumentLoader()
+
   for chunk_start=150, ((d:len()/150)-1)*150, 150 do
     print("s1000_loadinstrument: chunk_start", chunk_start)
 

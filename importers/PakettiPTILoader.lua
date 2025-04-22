@@ -53,9 +53,12 @@ local function pti_loadsample(filepath)
   print(string.format("-- PCM data size = %d bytes | Expected mono = %d | Expected stereo = %d | Detected: %s",
     #pcm_data, expected_mono_bytes, expected_stereo_bytes, is_stereo and "Stereo" or "Mono"))
 
-  -- Insert a new instrument and setup with Paketti defaults
-  renoise.song():insert_instrument_at(renoise.song().selected_instrument_index + 1)
-  renoise.song().selected_instrument_index = renoise.song().selected_instrument_index + 1
+  -- Handle instrument creation based on preference
+  if not renoise.tool().preferences.pakettiOverwriteCurrent then
+    -- Create new instrument (default behavior)
+    renoise.song():insert_instrument_at(renoise.song().selected_instrument_index + 1)
+    renoise.song().selected_instrument_index = renoise.song().selected_instrument_index + 1
+  end
 
   pakettiPreferencesDefaultInstrumentLoader()
   local smp = renoise.song().selected_instrument.samples[1]

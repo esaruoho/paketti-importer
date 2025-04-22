@@ -95,11 +95,17 @@ function rx2_loadsample(filename)
 
   print("Starting RX2 import for file:", filename)
   
-  -- Do NOT overwrite an existing instrument:
+  -- Handle instrument creation based on preference
   local current_index = renoise.song().selected_instrument_index
-  renoise.song():insert_instrument_at(current_index + 1)
-  renoise.song().selected_instrument_index = current_index + 1
-  print("Inserted new instrument at index:", renoise.song().selected_instrument_index)
+  if not renoise.tool().preferences.pakettiOverwriteCurrent then
+    -- Create new instrument (default behavior)
+    renoise.song():insert_instrument_at(current_index + 1)
+    renoise.song().selected_instrument_index = current_index + 1
+    print("Inserted new instrument at index:", renoise.song().selected_instrument_index)
+  else
+    -- Overwrite current instrument (AKA2RX behavior)
+    print("Using existing instrument at index:", current_index)
+  end
 
   -- Inject the default Paketti instrument configuration if available
   if pakettiPreferencesDefaultInstrumentLoader then

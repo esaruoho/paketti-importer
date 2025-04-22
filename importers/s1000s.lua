@@ -34,6 +34,15 @@ end
 function s1000_loadsample(filename)
   renoise.app():show_status("Importing Akai S1000/S3000 Sample...")
   local song = renoise.song()
+
+  -- Handle instrument creation based on preference
+  if not renoise.tool().preferences.pakettiOverwriteCurrent then
+    -- Create new instrument (default behavior)
+    song:insert_instrument_at(song.selected_instrument_index + 1)
+    song.selected_instrument_index = song.selected_instrument_index + 1
+  end
+
+  -- Clear existing samples if any
   if not #song.selected_instrument.samples == 0 then
     local s = song.selected_instrument:sample(1)
     for _, slice in pairs(s.slice_markers) do
@@ -41,12 +50,16 @@ function s1000_loadsample(filename)
     end
   end
   song.selected_instrument:clear()
+
+  -- Load Paketti default instrument configuration
+  pakettiPreferencesDefaultInstrumentLoader()
+
   if filename:match("-L.S%d*$") then
     load_it_stereo(filename, filename:gsub("-L(.S%d*)$", "-R%1"))
   elseif filename:match("-R.S%d*$") then
     load_it_stereo(filename:gsub("-R(.S%d*)$", "-L%1"), filename)
   else
-    load_it(filename,  0.5)
+    load_it(filename, 0.5)
   end
   return true
 end
