@@ -629,10 +629,13 @@ function sf2_loadsample(file_path)
         song.selected_instrument_index = song.selected_instrument_index + 1
       end
 
+      local r_inst = song.selected_instrument
+      r_inst:clear()  -- Clear the instrument before loading preset
+
       -- Load Paketti default instrument configuration
       renoise.app():load_instrument(preset_file)
 
-      local r_inst = song.selected_instrument
+      r_inst = song.selected_instrument  -- Get fresh reference after loading
       if not r_inst then
         renoise.app():show_error("Failed to load XRNI preset for " .. map.preset_name)
         return false
