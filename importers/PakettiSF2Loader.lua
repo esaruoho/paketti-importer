@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------
 -- SF2 Importer with Detailed Debugging of Panning, Transpose, Fine-Tune, and Key Ranges
 --------------------------------------------------------------------------------
-
 local _DEBUG = true
 local function dprint(...)
   if _DEBUG then
@@ -449,7 +448,7 @@ end
 --------------------------------------------------------------------------------
 -- Step 4: Import SF2
 --------------------------------------------------------------------------------
-local function import_sf2(file_path)
+local function sf2_loadsample(file_path)
   -- Create a ProcessSlicer to handle the import
   local slicer = nil
   
@@ -962,7 +961,7 @@ renoise.tool():add_menu_entry {
   name = "Main Menu:Tools:Import SF2 (Single XRNI per Preset)",
   invoke = function()
     local f = renoise.app():prompt_for_filename_to_read({"*.sf2"}, "Select SF2 to import")
-    if f and f ~= "" then import_sf2(f) end
+    if f and f ~= "" then sf2_loadsample(f) end
   end
 }
 
