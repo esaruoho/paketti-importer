@@ -300,8 +300,8 @@ local function read_instruments(data)
         }
       end
       -- Velocity range
-      if zone_params[42] then
-        local vr = zone_params[42]
+      if zone_params[44] then
+        local vr = zone_params[44]
         zone.vel_range = {
           low = vr % 256,
           high = math.floor(vr / 256) % 256
@@ -619,8 +619,8 @@ function sf2_loadsample(file_path)
       
       local is_drumkit = (map.bank == 128)
       local preset_file = is_drumkit and
-        (renoise.tool().bundle_path .. "Presets/12st_Pitchbend_Drumkit_C0.xrni") or
-        "Presets/12st_Pitchbend.xrni"
+        (renoise.tool().bundle_path .. "12st_Pitchbend_Drumkit_C0.xrni") or
+        "12st_Pitchbend.xrni"
 
       -- Handle instrument creation based on preference
       if not renoise.tool().preferences.pakettiOverwriteCurrent then
@@ -892,6 +892,26 @@ function sf2_loadsample(file_path)
                     reno_smp.sample_mapping.note_range = { 0, 119 }
                 end
             end
+
+            -- Apply velocity range: instrument zone overrides preset zone, defaults to full 1–127
+            local vel_low, vel_high = 1, 127
+            local vr = nil
+
+            -- instrument‑level has priority
+            if inst_zone_params[44] then
+              vr = inst_zone_params[44]
+            -- then preset level
+            elseif zone_params[44] then
+              vr = zone_params[44]
+            end
+
+            if vr then
+              -- low byte = low, high byte = high
+              vel_low  = clamp(vr % 256,  1, 127)
+              vel_high = clamp(math.floor(vr/256) % 256, 1, 127)
+            end
+
+            reno_smp.sample_mapping.velocity_range = { vel_low, vel_high }
 
             -- Print comprehensive debug info
             print("TUNING DEBUG for " .. hdr.name .. ": source=" .. tuning_source .. 
