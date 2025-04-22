@@ -19,7 +19,9 @@ local function read_uint32_le(data, offset)
          string.byte(data, offset + 4) * 16777216
 end
 
-local function pti_loadsample(filepath)
+-- Loads Polyend Tracker Instrument (.PTI) files
+
+function pti_loadsample(filepath)
   local file = io.open(filepath, "rb")
   if not file then
     renoise.app():show_error("Cannot open file: " .. filepath)
