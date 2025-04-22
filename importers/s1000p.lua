@@ -1,6 +1,4 @@
 ---@diagnostic disable: lowercase-global
-
-require("ProcessSlicer")
 require("s1000s")
 
 function s1000_loadinstrument(filename)
