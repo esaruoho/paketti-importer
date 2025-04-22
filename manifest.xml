@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Paketti File Format Import</Name>
+  <Id>org.lackluster.PakettiFileFormatImport</Id>
+  <Version>1.00</Version>
+  <ApiVersion>1</ApiVersion>
+  <Author>Lackluster | esaruoho@icloud.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Importer</Category>
+  <Description>Paketti File Format Imports (.REX, .RX2, .SF2, .PTI for now)</Description>
+  <Homepage>http://patreon.com/esaruoho</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>
