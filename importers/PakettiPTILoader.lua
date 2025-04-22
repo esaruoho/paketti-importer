@@ -23,16 +23,27 @@ local function pti_loadsample(filepath)
   local file = io.open(filepath, "rb")
   if not file then
     renoise.app():show_error("Cannot open file: " .. filepath)
-    return
+    return false
   end
 
   print("------------")
   print(string.format("-- PTI: Import filename: %s", filepath))
 
   local header = file:read(392)
+  if not header or #header ~= 392 then
+    renoise.app():show_error("Invalid PTI file: incomplete header")
+    file:close()
+    return false
+  end
+
   local sample_length = read_uint32_le(header, 60)
   local pcm_data = file:read("*a")
   file:close()
+
+  if not pcm_data or #pcm_data == 0 then
+    renoise.app():show_error("Invalid PTI file: no sample data")
+    return false
+  end
 
   -- Detect if PCM data is mono or stereo
   local expected_mono_bytes = sample_length * 2
@@ -48,6 +59,11 @@ local function pti_loadsample(filepath)
 
   pakettiPreferencesDefaultInstrumentLoader()
   local smp = renoise.song().selected_instrument.samples[1]
+  if not smp then
+    renoise.app():show_error("Could not access the instrument's sample slot")
+    return false
+  end
+
   local clean_name = get_clean_filename(filepath)
   renoise.song().selected_instrument.name = clean_name
   smp.name = clean_name
@@ -56,9 +72,22 @@ local function pti_loadsample(filepath)
   renoise.song().instruments[renoise.song().selected_instrument_index]
       .sample_device_chains[1].name = clean_name
 
-  -- Create the sample buffer using the stereo flag
-  smp.sample_buffer:create_sample_data(44100, 16, is_stereo and 2 or 1, sample_length)
+  -- Create the sample buffer
+  local success, err = pcall(function()
+    smp.sample_buffer:create_sample_data(44100, 16, is_stereo and 2 or 1, sample_length)
+  end)
+  if not success then
+    renoise.app():show_error("Failed to create sample buffer: " .. tostring(err))
+    return false
+  end
+
   local buffer = smp.sample_buffer
+  if not buffer then
+    renoise.app():show_error("Failed to access sample buffer after creation")
+    return false
+  end
+
+  buffer:prepare_sample_data_changes()
 
   -- Read the number of valid slices from the header (1-indexed Lua)
   local slice_count = string.byte(header, 377)
@@ -66,8 +95,6 @@ local function pti_loadsample(filepath)
   print(string.format("-- Format: %s, %dHz, %d-bit, %d frames, sliceCount = %d", 
     is_stereo and "Stereo" or "Mono", 44100, 16, sample_length, slice_count))
   print(string.format("-- Stereo detected by blockwise comparison: %s", tostring(is_stereo)))
-
-  buffer:prepare_sample_data_changes()
 
   if is_stereo then
     -- For stereo, left and right channels are stored in two separate blocks.
@@ -89,8 +116,15 @@ local function pti_loadsample(filepath)
       if sampleL >= 32768 then sampleL = sampleL - 65536 end
       if sampleR >= 32768 then sampleR = sampleR - 65536 end
   
-      buffer:set_sample_data(1, i, sampleL / 32768)
-      buffer:set_sample_data(2, i, sampleR / 32768)
+      local success, err = pcall(function()
+        buffer:set_sample_data(i - 1, 0, sampleL / 32768)
+        buffer:set_sample_data(i - 1, 1, sampleR / 32768)
+      end)
+      if not success then
+        buffer:cancel_sample_data_changes()
+        renoise.app():show_error("Failed to write stereo sample data: " .. tostring(err))
+        return false
+      end
     end
   else
     for i = 1, sample_length do
@@ -99,11 +133,26 @@ local function pti_loadsample(filepath)
       local hi = pcm_data:byte(byte_offset + 1) or 0
       local sample = bit.bor(bit.lshift(hi, 8), lo)
       if sample >= 32768 then sample = sample - 65536 end
-      buffer:set_sample_data(1, i, sample / 32768)
+  
+      local success, err = pcall(function()
+        buffer:set_sample_data(i - 1, 0, sample / 32768)
+      end)
+      if not success then
+        buffer:cancel_sample_data_changes()
+        renoise.app():show_error("Failed to write mono sample data: " .. tostring(err))
+        return false
+      end
     end
   end
   
-  buffer:finalize_sample_data_changes()
+  -- Finalize the sample data changes
+  local success, err = pcall(function()
+    buffer:finalize_sample_data_changes()
+  end)
+  if not success then
+    renoise.app():show_error("Failed to finalize sample data changes: " .. tostring(err))
+    return false
+  end
 
   -- Read loop data from the header
   local loop_mode_byte = string.byte(header, 77)
@@ -367,7 +416,7 @@ local function pti_loadsample(filepath)
         slice_sample.interpolation_mode = renoise.Sample.INTERPOLATE_SINC
         slice_sample.oversample_enabled = true
         slice_sample.oneshot = false
-        slice_sample.new_note_action = 0
+        slice_sample.new_note_action = renoise.Sample.NEW_NOTE_ACTION_NOTE_CUT
       end
     end
 
@@ -387,7 +436,7 @@ local function pti_loadsample(filepath)
           slice_sample.interpolation_mode = renoise.Sample.INTERPOLATE_SINC
           slice_sample.oversample_enabled = true
           slice_sample.oneshot = false
-          slice_sample.new_note_action = 0
+          slice_sample.new_note_action = renoise.Sample.NEW_NOTE_ACTION_NOTE_CUT
         end
       end
     end
@@ -417,6 +466,8 @@ local function pti_loadsample(filepath)
     macro_device.display_name = string.format("%02X", renoise.song().selected_instrument_index - 1) .. " " .. clean_name
     renoise.song().selected_track.devices[2].is_maximized = false
   end
+  
+  return true
 end
 
 local pti_integration = {
