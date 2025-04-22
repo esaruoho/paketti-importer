@@ -448,7 +448,7 @@ end
 --------------------------------------------------------------------------------
 -- Step 4: Import SF2
 --------------------------------------------------------------------------------
-local function sf2_loadsample(file_path)
+function sf2_loadsample(file_path)
   -- Create a ProcessSlicer to handle the import
   local slicer = nil
   
