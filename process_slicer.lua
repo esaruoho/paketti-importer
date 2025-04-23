@@ -89,8 +89,9 @@ function ProcessSlicer:__on_idle()
     if (not succeeded) then
       -- Stop the process on errors
       self:stop()
-      -- Forward the error
-      error(error_message) 
+      -- Show error in status bar instead of throwing
+      renoise.app():show_status("Failed to load: " .. tostring(error_message))
+      print("ProcessSlicer error: " .. tostring(error_message))
     end
     
   -- Stop when the process function completed
