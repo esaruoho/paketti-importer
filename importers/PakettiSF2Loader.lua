@@ -622,12 +622,9 @@ function sf2_loadsample(file_path)
         (renoise.tool().bundle_path .. "12st_Pitchbend_Drumkit_C0.xrni") or
         "12st_Pitchbend.xrni"
 
-      -- Handle instrument creation based on preference
-      if not renoise.tool().preferences.pakettiOverwriteCurrent then
-        -- Create new instrument (default behavior)
-        song:insert_instrument_at(song.selected_instrument_index + 1)
-        song.selected_instrument_index = song.selected_instrument_index + 1
-      end
+      -- Always create new instrument for SF2 imports, ignoring pakettiOverwriteCurrent preference
+      song:insert_instrument_at(song.selected_instrument_index + 1)
+      song.selected_instrument_index = song.selected_instrument_index + 1
 
       local r_inst = song.selected_instrument
       r_inst:clear()  -- Clear the instrument before loading preset
