@@ -78,14 +78,7 @@ function pti_loadsample(filepath)
       .sample_device_chains[1].name = clean_name
 
   -- Create the sample buffer
-  local success, err = pcall(function()
-    smp.sample_buffer:create_sample_data(44100, 16, is_stereo and 2 or 1, sample_length)
-  end)
-  if not success then
-    renoise.app():show_error("Failed to create sample buffer: " .. tostring(err))
-    return false
-  end
-
+  smp.sample_buffer:create_sample_data(44100, 16, is_stereo and 2 or 1, sample_length)
   local buffer = smp.sample_buffer
   if not buffer then
     renoise.app():show_error("Failed to access sample buffer after creation")
@@ -121,14 +114,8 @@ function pti_loadsample(filepath)
       if sampleL >= 32768 then sampleL = sampleL - 65536 end
       if sampleR >= 32768 then sampleR = sampleR - 65536 end
   
-      local success, err = pcall(function()
-        buffer:set_sample_data(i - 1, 0, sampleL / 32768)
-        buffer:set_sample_data(i - 1, 1, sampleR / 32768)
-      end)
-      if not success then
-        renoise.app():show_error("Failed to write stereo sample data: " .. tostring(err))
-        return false
-      end
+      buffer:set_sample_data(1, i, sampleL / 32768)
+      buffer:set_sample_data(2, i, sampleR / 32768)
     end
   else
     for i = 1, sample_length do
@@ -137,25 +124,11 @@ function pti_loadsample(filepath)
       local hi = pcm_data:byte(byte_offset + 1) or 0
       local sample = bit.bor(bit.lshift(hi, 8), lo)
       if sample >= 32768 then sample = sample - 65536 end
-  
-      local success, err = pcall(function()
-        buffer:set_sample_data(i - 1, 0, sample / 32768)
-      end)
-      if not success then
-        renoise.app():show_error("Failed to write mono sample data: " .. tostring(err))
-        return false
-      end
+      buffer:set_sample_data(1, i, sample / 32768)
     end
   end
   
-  -- Finalize the sample data changes
-  local success, err = pcall(function()
-    buffer:finalize_sample_data_changes()
-  end)
-  if not success then
-    renoise.app():show_error("Failed to finalize sample data changes: " .. tostring(err))
-    return false
-  end
+  buffer:finalize_sample_data_changes()
 
   -- Read loop data from the header
   local loop_mode_byte = string.byte(header, 77)
