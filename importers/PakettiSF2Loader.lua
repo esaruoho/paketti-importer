@@ -456,6 +456,7 @@ function sf2_loadsample(file_path)
     local dialog, vb = nil, nil
     dialog, vb = slicer:create_dialog("Importing SF2...")
     
+    renoise.app():show_status("Starting SF2 import...")
     print("Importing SF2 file: " .. file_path)
 
     local f = io.open(file_path, "rb")
