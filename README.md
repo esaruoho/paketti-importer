@@ -7,13 +7,16 @@ The Import features of Paketti, my quality-of-life-tool for Renoise.
 ## Importing
 - .REX (ReCycle V1 Legacy format)
 - .RX2 (ReCycle V2 format)
+- .IFF (OctaMED, ProTracker, SoundTracker)
+- .EXE
+- .MOD (import all samples as one wavetable, or import all samples as sample per instrument)
 - .SF2 (Soundfont V2)
 - .PTI (Polyend Tracker Instrument)
 - more TBA
 
 ## Exporting
 
-Stay tuned.
+.PTI (Polyend Tracker Instrument)
 
 # Discord
 
