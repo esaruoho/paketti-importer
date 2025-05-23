@@ -5,6 +5,7 @@ require "importers/PakettiSF2Loader"
 require "importers/PakettiREXLoader"
 require "importers/PakettiRX2Loader"
 require "importers/PakettiPTILoader"
+require "importers/PakettiIFFLoader"
 require "importers/s1000p"
 require "importers/s1000s"
 
