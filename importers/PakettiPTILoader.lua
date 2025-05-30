@@ -785,40 +785,12 @@ renoise.tool():add_menu_entry{name="Disk Browser Files:Paketti..:Import .PTI (Po
 }
 
 -- Menu entries for export
-renoise.tool():add_menu_entry{
-  name = "Disk Browser Files:Paketti..:Export .PTI Instrument",
-  invoke = pti_savesample
-}
-
-renoise.tool():add_menu_entry{
-  name = "--Sample Editor:Paketti..:Save..:Export .PTI Instrument",
-  invoke = pti_savesample
-}
-
-renoise.tool():add_menu_entry{
-  name = "--Instrument Box:Paketti..:Save..:Export .PTI Instrument",
-  invoke = pti_savesample
-}
-
-renoise.tool():add_menu_entry{
-  name = "--Sample Navigator:Paketti..:Save..:Export .PTI Instrument",
-  invoke = pti_savesample
-}
-
-renoise.tool():add_menu_entry{
-  name = "--Sample Mappings:Paketti..:Save..:Export .PTI Instrument",
-  invoke = pti_savesample
-}
-
-renoise.tool():add_menu_entry{
-  name = "Main Menu:Tools:Paketti..:Instruments..:File Formats..:Export .PTI Instrument",
-  invoke = pti_savesample
-}
-
-renoise.tool():add_keybinding{
-  name = "Global:Paketti:PTI Export",
-  invoke = pti_savesample
-}
+renoise.tool():add_menu_entry{name = "Disk Browser Files:Paketti..:Export .PTI Instrument",invoke = pti_savesample}
+renoise.tool():add_menu_entry{name = "--Sample Editor:Paketti..:Save..:Export .PTI Instrument",invoke = pti_savesample}
+renoise.tool():add_menu_entry{name = "--Instrument Box:Paketti..:Save..:Export .PTI Instrument",invoke = pti_savesample}
+renoise.tool():add_menu_entry{name = "--Sample Navigator:Paketti..:Save..:Export .PTI Instrument",invoke = pti_savesample}
+renoise.tool():add_menu_entry{name = "--Sample Mappings:Paketti..:Save..:Export .PTI Instrument",invoke = pti_savesample}
+renoise.tool():add_menu_entry{name = "Main Menu:Tools:Paketti..:Instruments..:File Formats..:Export .PTI Instrument",invoke = pti_savesample}
+renoise.tool():add_keybinding{name = "Global:Paketti:PTI Export",invoke = pti_savesample}
 
 _AUTO_RELOAD_DEBUG = true
-
