@@ -11,7 +11,7 @@ require "importers/s1000s"
 require "importers/PakettiPolyendSuite"
 -- Paketti preferences
 preferences = renoise.Document.create("ScriptingToolPreferences") {
-  pakettiOverwriteCurrent = false  -- false = create new instrument (default), true = overwrite current
+  pakettiOverwriteCurrent = false,
   pakettiREXBundlePath = "." .. separator .. "rx2",
 }
 renoise.tool().preferences = preferences
