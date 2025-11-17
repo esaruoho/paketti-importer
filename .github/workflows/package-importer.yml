@@ -29,32 +29,22 @@ jobs:
             exit 1
           fi
 
-      # 3. Remove the definitions folder if present
-      - name: Remove definitions folder
-        run: rm -rf org.lackluster.Paketti_File_Format_Importer.xrnx/definitions
-
-      # 4. Generate a timestamp-based tag and filename
+      # 3. Generate a timestamp-based tag and filename
       - name: Generate Tag and Filename
         run: |
           TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
           echo "TAG_NAME=$TIMESTAMP" >> $GITHUB_ENV
-          echo "FILENAME=org.lackluster.Paketti_File_Format_Importer_V3.54_${TIMESTAMP}.xrnx" >> $GITHUB_ENV
+          echo "FILENAME=org.lackluster.PakettiFormats_V3.54_${TIMESTAMP}.xrnx" >> $GITHUB_ENV
 
-      # 5. Zip the package using the dynamic filename
+      # 4. Zip the package using the dynamic filename
       - name: Zip XRNX Package
         run: |
           zip -r "${{ env.FILENAME }}" . \
             -x "*.git*" "*.github*" \
             "preferences.xml" \
-            "preferencesDynamicView.xml" \
-            "definitions/*" \
             ".dsp_cache" \
-            "action_selector_settings.txt" \
-            "free_keybindings_20250302_160606.txt" \
-            "paketti-importer.sublime-workspace" \
-            "paketti-importer.sublime-project"
 
-      # 6. Create and push the Git tag
+      # 5. Create and push the Git tag
       - name: Create and Push Tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,7 +54,7 @@ jobs:
           git tag "$TAG_NAME"
           git push origin "$TAG_NAME"
 
-      # 7. Create a GitHub release for that tag
+      # 6. Create a GitHub release for that tag
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -72,11 +62,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.TAG_NAME }}
-          release_name: Paketti_File_Format_Importer V3.54 – ${{ env.TAG_NAME }}
+          release_name: Paketti_Formats V3.54 – ${{ env.TAG_NAME }}
           draft: false
           prerelease: false
 
-      # 8. Upload the dynamically named .xrnx asset
+      # 7. Upload the dynamically named .xrnx asset
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:

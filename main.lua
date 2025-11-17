@@ -378,15 +378,6 @@ function show_paketti_preferences_dialog()
   local dialog = nil
   
   local dialog_content = vb:column {
-    margin = 10,
-    spacing = 5,
-    
-    vb:text {
-      text = "Paketti Importer Preferences",
-      font = "bold"
-    },
-    
-    vb:space { height = 10 },
     
     vb:row {
       vb:checkbox {
