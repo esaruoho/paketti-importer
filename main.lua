@@ -48,13 +48,13 @@ preferences = renoise.Document.create("ScriptingToolPreferences") {
   pakettiPolyendSavePaths = false,
   
   -- Sample loader preferences
-  pakettiLoaderInterpolation = renoise.Instrument.INTERPOLATE_DEFAULT,
+  pakettiLoaderInterpolation = renoise.Sample.INTERPOLATE_LINEAR,
   pakettiLoaderOverSampling = false,
   pakettiLoaderAutofade = false,
   pakettiLoaderAutoseek = true,
   pakettiLoaderLoopMode = renoise.Sample.LOOP_MODE_OFF,
   pakettiLoaderOneshot = false,
-  pakettiLoaderNNA = renoise.Instrument.NOTE_OFF,
+  pakettiLoaderNNA = renoise.Sample.NEW_NOTE_ACTION_NOTE_OFF,
   pakettiLoaderLoopExit = false,
   pakettiLoaderDontCreateAutomationDevice = true,
 }
@@ -235,7 +235,44 @@ function loadnative(effect, name, preset_path)
   end
 end
 
-
+-- Basic sample normalization function (called by PakettiPolyendSuite as fallback)
+function normalize_selected_sample()
+  local sample = renoise.song().selected_sample
+  if not sample or not sample.sample_buffer or not sample.sample_buffer.has_sample_data then
+    renoise.app():show_status("No valid sample to normalize")
+    return
+  end
+  
+  local sbuf = sample.sample_buffer
+  local peak = 0
+  
+  -- Find peak value across all channels
+  sbuf:prepare_sample_data_changes()
+  for channel = 1, sbuf.number_of_channels do
+    for frame = 1, sbuf.number_of_frames do
+      local value = math.abs(sbuf:sample_data(channel, frame))
+      if value > peak then
+        peak = value
+      end
+    end
+  end
+  
+  -- Normalize if peak is not zero or already at 1.0
+  if peak > 0 and peak < 1.0 then
+    local scale = 1.0 / peak
+    for channel = 1, sbuf.number_of_channels do
+      for frame = 1, sbuf.number_of_frames do
+        local value = sbuf:sample_data(channel, frame)
+        sbuf:set_sample_data(channel, frame, value * scale)
+      end
+    end
+    renoise.app():show_status("Sample normalized")
+  else
+    renoise.app():show_status("Sample already at peak or silent")
+  end
+  
+  sbuf:finalize_sample_data_changes()
+end
 
 function pakettiPreferencesDefaultInstrumentLoader()
   local defaultInstrument = "12st_Pitchbend.xrni"

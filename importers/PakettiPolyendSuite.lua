@@ -325,7 +325,7 @@ print (selected_sample_filenames[1] or "No filename")
         current_sample.loop_release = preferences.pakettiLoaderLoopExit.value
 
         renoise.app().window.active_middle_frame = renoise.ApplicationWindow.MIDDLE_FRAME_INSTRUMENT_SAMPLE_EDITOR
-        G01()
+
 --if normalize then normalize_selected_sample() end
 
 if preferences.pakettiLoaderDontCreateAutomationDevice.value == false then 
