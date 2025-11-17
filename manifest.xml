@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Paketti File Format Import</Name>
   <Id>org.lackluster.PakettiFileFormatImport</Id>
-  <Version>1.21</Version>
+  <Version>1.22</Version>
   <ApiVersion>6</ApiVersion>
   <Author>Lackluster | esaruoho@icloud.com</Author>
   <AutoUpgraded>false</AutoUpgraded>

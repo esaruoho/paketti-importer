@@ -2,7 +2,19 @@
 
 The Import features of Paketti, my quality-of-life-tool for Renoise.
 
-## Version 1.21 - Latest Changes
+## Version 1.22 - Latest Changes
+
+### NEW: Complete Polyend Tracker Integration
+- **Melodic Slice Export**: Create sample chains from multiple samples and export as PTI with slice markers
+- **Slice Switcher**: Velocity-mapped slice switching for polyphonic playback (up to 48 samples)
+- **PTI Export**: Export current sample/instrument as Polyend Tracker Instrument format
+- **Polyend Suite**: Complete Polyend Tracker workflow integration with drag & drop
+
+### FIXED: AKAI S1000 Program Import
+- Fixed "attempt to index local 'tab' (a string value)" error when importing .P/.P1/.P3 files
+- AKAI program files now load correctly with all sample mappings
+
+## Version 1.21 Changes
 
 ### NEW: Digitakt Sample Chain Export
 - **Full Digitakt/Digitakt 2 Support**: Export optimized sample chains for Elektron Digitakt hardware

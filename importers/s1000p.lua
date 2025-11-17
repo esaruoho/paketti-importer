@@ -108,7 +108,7 @@ function s1000_loadinstrument(filename)
   instrument:clear()
   instrument.name = inst_name
 
-  sliced_process = ProcessSlicer(s1000_loadinstrument_samples, nil, instrument, sample_path, samples)
+  sliced_process = ProcessSlicer(s1000_loadinstrument_samples, instrument, sample_path, samples)
   sliced_process:start()
   return true
 end

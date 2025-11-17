@@ -9,6 +9,8 @@ require "importers/PakettiIFFLoader"
 require "importers/s1000p"
 require "importers/s1000s"
 require "importers/PakettiPolyendSuite"
+require "importers/PakettiPolyendMelodicSliceExport"
+require "importers/PakettiPolyendSliceSwitcher"
 require "importers/PakettiITIImport"
 require "importers/PakettiRawImport"
 require "importers/PakettiSFZBatchConverter"
@@ -18,11 +20,43 @@ require "importers/PakettiDigitakt"
 if renoise.API_VERSION >= 6.2 then
   require "importers/PakettiImageToSample"
 end
+-- Keyhandler function for dialogs
+function my_keyhandler_func(dialog, key)
+  if key.modifiers == "" and key.name == "esc" then
+    dialog:close()
+    return key
+  else
+    return key
+  end
+end
+
 -- Paketti preferences
 preferences = renoise.Document.create("ScriptingToolPreferences") {
   pakettiOverwriteCurrent = false,
   pakettiREXBundlePath = "." .. separator .. "rx2",
   pakettiLoadDefaultInstrument = true,  -- Set to false to skip loading default instrument template
+  
+  -- Polyend Tracker preferences
+  PolyendRoot = "",
+  PolyendLocalPath = "",
+  PolyendPTISavePath = "",
+  PolyendWAVSavePath = "",
+  PolyendUseSavePaths = false,
+  PolyendLocalBackupPath = "",
+  PolyendUseLocalBackup = false,
+  pakettiPolyendPTISavePath = "",
+  pakettiPolyendSavePaths = false,
+  
+  -- Sample loader preferences
+  pakettiLoaderInterpolation = renoise.Instrument.INTERPOLATE_DEFAULT,
+  pakettiLoaderOverSampling = false,
+  pakettiLoaderAutofade = false,
+  pakettiLoaderAutoseek = true,
+  pakettiLoaderLoopMode = renoise.Sample.LOOP_MODE_OFF,
+  pakettiLoaderOneshot = false,
+  pakettiLoaderNNA = renoise.Instrument.NOTE_OFF,
+  pakettiLoaderLoopExit = false,
+  pakettiLoaderDontCreateAutomationDevice = true,
 }
 renoise.tool().preferences = preferences
 
@@ -200,6 +234,8 @@ function loadnative(effect, name, preset_path)
     end
   end
 end
+
+
 
 function pakettiPreferencesDefaultInstrumentLoader()
   local defaultInstrument = "12st_Pitchbend.xrni"
