@@ -16,7 +16,10 @@ require "importers/PakettiRawImport"
 require "importers/PakettiSFZBatchConverter"
 require "importers/PakettiOTExport"
 require "importers/PakettiOTSTRDImporter"
+require "importers/PakettiOctaCycle"
 require "importers/PakettiDigitakt"
+require "importers/PakettiITIExport"
+require "importers/PakettiWTImport"
 if renoise.API_VERSION >= 6.2 then
   require "importers/PakettiImageToSample"
 end
@@ -27,6 +30,74 @@ function my_keyhandler_func(dialog, key)
     return key
   else
     return key
+  end
+end
+
+-- PitchBend Drumkit Loader function
+function pitchBendDrumkitLoader()
+  local selected_sample_filenames = renoise.app():prompt_for_multiple_filenames_to_read({"*.wav", "*.aif", "*.flac", "*.mp3", "*.aiff"}, "Paketti PitchBend Drumkit Sample Loader")
+  if #selected_sample_filenames == 0 then
+    renoise.app():show_status("No files selected.")
+    return
+  end
+  
+  local song=renoise.song()
+  local current_instrument_index = song.selected_instrument_index
+  local current_instrument = song:instrument(current_instrument_index)
+  
+  if #current_instrument.samples > 0 or current_instrument.plugin_properties.plugin_loaded then
+    song:insert_instrument_at(current_instrument_index + 1)
+    song.selected_instrument_index = current_instrument_index + 1
+  end
+  
+  current_instrument_index = song.selected_instrument_index
+  current_instrument = song:instrument(current_instrument_index)
+  
+  local drumkit_path = renoise.tool().bundle_path .. "12st_Pitchbend_Drumkit_C0.xrni"
+  renoise.app():load_instrument(drumkit_path)
+  
+  current_instrument_index = song.selected_instrument_index
+  current_instrument = song:instrument(current_instrument_index)
+  
+  local instrument_slot_hex = string.format("%02X", current_instrument_index - 1)
+  local instrument_name_prefix = instrument_slot_hex .. "_Drumkit"
+  
+  local max_samples = 120
+  local num_samples_to_load = math.min(#selected_sample_filenames, max_samples)
+  
+  local selected_sample_filename = selected_sample_filenames[1]
+  local sample = renoise.song().selected_instrument.samples[1]
+  local sample_buffer = sample.sample_buffer
+  local samplefilename = selected_sample_filename:match("^.+[/\\](.+)$")
+  
+  current_instrument.name = instrument_name_prefix
+  sample.name = samplefilename
+  
+  if sample_buffer:load_from(selected_sample_filename) then
+    renoise.app():show_status("Sample " .. selected_sample_filename .. " loaded successfully.")
+  else
+    renoise.app():show_status("Failed to load the sample.")
+  end
+  
+  for i = 2, num_samples_to_load do
+    selected_sample_filename = selected_sample_filenames[i]
+    if #current_instrument.samples < i then
+      current_instrument:insert_sample_at(i)
+    end
+    sample = current_instrument.samples[i]
+    sample_buffer = sample.sample_buffer
+    samplefilename = selected_sample_filename:match("^.+[/\\](.+)$")
+    sample.name = (samplefilename)
+    if sample_buffer:load_from(selected_sample_filename) then
+      renoise.app():show_status("Sample " .. selected_sample_filename .. " loaded successfully.")
+    else
+      renoise.app():show_status("Failed to load the sample.")
+    end
+  end
+  
+  if #selected_sample_filenames > max_samples then
+    local not_loaded_count = #selected_sample_filenames - max_samples
+    renoise.app():show_status("Maximum Drumkit Zones is 120 - was not able to load " .. not_loaded_count .. " samples.")
   end
 end
 
@@ -535,13 +606,59 @@ renoise.tool():add_menu_entry {
   end
 }
 
--- Export menu entries
-renoise.tool():add_menu_entry {
-  name = "--Main Menu:File:Paketti Formats:Export Current Sample as .PTI...",
-  invoke = pti_savesample
-}
+-- ============================================
+-- EXPORT MENU ENTRIES
+-- ============================================
 
--- Conversion menu entries
+-- ITI Export
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Export Instrument to ITI...",invoke = function() pakettiITIExportDialog() end}
+
+-- IFF/8SVX/16SV Export and Conversion
+renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Export:Load IFF Sample File...",invoke = loadIFFSampleFromDialog}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Convert IFF to WAV...",invoke = convertIFFToWAV}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Convert WAV to IFF...",invoke = convertWAVToIFF}
+renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Export:Save Selected Sample as 8SVX...",invoke = saveCurrentSampleAs8SVX}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Save Selected Sample as 16SV...",invoke = saveCurrentSampleAs16SV}
+renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Export:Batch Convert WAV/AIFF to 8SVX...",invoke = batchConvertToIFF}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Batch Convert WAV/AIFF to 16SV...",invoke = batchConvertTo16SV}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Batch Convert IFF/8SVX/16SV to WAV...",invoke = batchConvertIFFToWAV}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Batch Convert WAV to IFF...",invoke = batchConvertWAVToIFF}
+
+-- Wavetable Export
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Export Wavetable (.WT)...", invoke = paketti_export_wavetable}
+
+-- Polyend PTI Export
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Polyend (PTI) Save Current Sample as...", invoke = pti_savesample}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Export Subfolders as Melodic Slices...", invoke = PakettiExportSubfoldersAsMelodicSlices}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Export Subfolders as Drum Slices...", invoke = PakettiExportSubfoldersAsDrumSlices}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Save Current as Drumkit (Mono)...", invoke=function() save_pti_as_drumkit_mono(false) end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Save Current as Drumkit (Stereo)...", invoke=function() save_pti_as_drumkit_stereo(false) end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Create 48 Slice Drumkit (Mono)...", invoke=function() pitchBendDrumkitLoader() save_pti_as_drumkit_mono(false) end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Create 48 Slice Drumkit (Stereo)...", invoke=function() pitchBendDrumkitLoader() save_pti_as_drumkit_stereo(false) end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Melodic Slice Export (One-Shot)...", invoke=PakettiMelodicSliceExport}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Melodic Slice Create Chain...", invoke=PakettiMelodicSliceCreateChain}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Melodic Slice Export Current...", invoke=PakettiMelodicSliceExportCurrent}
+
+-- Digitakt Export
+renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Export:Digitakt Export Sample Chain...", invoke = PakettiDigitaktDialog}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Digitakt Quick Export (Mono)...", invoke = PakettiDigitaktExportMono}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Digitakt Quick Export (Stereo)...", invoke = PakettiDigitaktExportStereo}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Digitakt Quick Export (Chain Mode)...", invoke = PakettiDigitaktExportChain}
+
+-- Octatrack Export
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Octatrack Export (.WAV+.ot)...", invoke=function() PakettiOTExport() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Export (.ot only)...", invoke=function() PakettiOTExportOtOnly() end}
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Octatrack Generate Drumkit (Smart Mono/Stereo)...", invoke=function() PakettiOTDrumkitSmart() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Generate Drumkit (Force Mono)...", invoke=function() PakettiOTDrumkitMono() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Generate Drumkit (Play to End)...", invoke=function() PakettiOTDrumkitPlayToEnd() end}
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Octatrack Generate OctaCycle...", invoke=function() PakettiOctaCycle() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Quick OctaCycle (C, Oct 1-7)...", invoke=function() PakettiOctaCycleQuick() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Export OctaCycle...", invoke=function() PakettiOctaCycleExport() end}
+
+-- ============================================
+-- CONVERSION MENU ENTRIES
+-- ============================================
+
 renoise.tool():add_menu_entry {
   name = "--Main Menu:File:Paketti Formats:Convert RX2 to PTI...",
   invoke = rx2_to_pti_convert

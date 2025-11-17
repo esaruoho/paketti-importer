@@ -2,12 +2,12 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Paketti Formats</Name>
   <Id>org.lackluster.PakettiFormats</Id>
-  <Version>1.22</Version>
+  <Version>1.31</Version>
   <ApiVersion>6</ApiVersion>
   <Author>Lackluster | esaruoho@icloud.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
   <Category>Import</Category>
-  <Description>Paketti File Format Import/Export (.REX, .RX2, .SF2, .PTI, .ITI, .IFF, .8SVX, .16SV, AKAI, SFZ, Octatrack .OT, .STRD, Images, Raw Binary) + PTI/OT/Digitakt Export + Batch SFZ→XRNI + RX2→PTI + Octatrack/Digitakt Drumkit</Description>
+  <Description>Import (Octatrack, Polyend Tracker, .REX, .RX2, .SF2, .PTI, .ITI, .IFF, .8SVX, .16SV, .WT, .SFZ, Images, 4channel modules, Akai S1000/S3000, Raw Binary), Export (Octatrack .ot files + Drumkits + OctaCycle, Digitakt Sample Chains, Polyend Tracker .PTI + Drumkits + Melodic Slices, .IFF, .8SVX, .16SV, .ITI, .WT) + Batch Conversions + Drumkit Generators</Description>
   <Homepage>http://patreon.com/esaruoho</Homepage>
   <Platform/>
   <Icon/>
