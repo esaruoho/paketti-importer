@@ -34,7 +34,7 @@ jobs:
         run: |
           TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
           echo "TAG_NAME=$TIMESTAMP" >> $GITHUB_ENV
-          echo "FILENAME=org.lackluster.PakettiFormats_V3.54_${TIMESTAMP}.xrnx" >> $GITHUB_ENV
+          echo "FILENAME=org.lackluster.PakettiFormats_V1.354_${TIMESTAMP}.xrnx" >> $GITHUB_ENV
 
       # 4. Zip the package using the dynamic filename
       - name: Zip XRNX Package

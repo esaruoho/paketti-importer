@@ -611,49 +611,49 @@ renoise.tool():add_menu_entry {
 -- ============================================
 
 -- ITI Export
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Export Instrument to ITI...",invoke = function() pakettiITIExportDialog() end}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Export Instrument to ITI...",invoke = function() pakettiITIExportDialog() end}
 
 -- IFF/8SVX/16SV Export and Conversion
-renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Export:Load IFF Sample File...",invoke = loadIFFSampleFromDialog}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Convert IFF to WAV...",invoke = convertIFFToWAV}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Convert WAV to IFF...",invoke = convertWAVToIFF}
-renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Export:Save Selected Sample as 8SVX...",invoke = saveCurrentSampleAs8SVX}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Save Selected Sample as 16SV...",invoke = saveCurrentSampleAs16SV}
-renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Export:Batch Convert WAV/AIFF to 8SVX...",invoke = batchConvertToIFF}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Batch Convert WAV/AIFF to 16SV...",invoke = batchConvertTo16SV}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Batch Convert IFF/8SVX/16SV to WAV...",invoke = batchConvertIFFToWAV}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Batch Convert WAV to IFF...",invoke = batchConvertWAVToIFF}
+renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Formats:Export:Load IFF Sample File...",invoke = loadIFFSampleFromDialog}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Convert IFF to WAV...",invoke = convertIFFToWAV}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Convert WAV to IFF...",invoke = convertWAVToIFF}
+renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Formats:Export:Save Selected Sample as 8SVX...",invoke = saveCurrentSampleAs8SVX}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Save Selected Sample as 16SV...",invoke = saveCurrentSampleAs16SV}
+renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Formats:Export:Batch Convert WAV/AIFF to 8SVX...",invoke = batchConvertToIFF}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Batch Convert WAV/AIFF to 16SV...",invoke = batchConvertTo16SV}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Batch Convert IFF/8SVX/16SV to WAV...",invoke = batchConvertIFFToWAV}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Batch Convert WAV to IFF...",invoke = batchConvertWAVToIFF}
 
 -- Wavetable Export
-renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Export Wavetable (.WT)...", invoke = paketti_export_wavetable}
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Formats:Export:Export Wavetable (.WT)...", invoke = paketti_export_wavetable}
 
 -- Polyend PTI Export
-renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Polyend (PTI) Save Current Sample as...", invoke = pti_savesample}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Export Subfolders as Melodic Slices...", invoke = PakettiExportSubfoldersAsMelodicSlices}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Export Subfolders as Drum Slices...", invoke = PakettiExportSubfoldersAsDrumSlices}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Save Current as Drumkit (Mono)...", invoke=function() save_pti_as_drumkit_mono(false) end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Save Current as Drumkit (Stereo)...", invoke=function() save_pti_as_drumkit_stereo(false) end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Create 48 Slice Drumkit (Mono)...", invoke=function() pitchBendDrumkitLoader() save_pti_as_drumkit_mono(false) end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Create 48 Slice Drumkit (Stereo)...", invoke=function() pitchBendDrumkitLoader() save_pti_as_drumkit_stereo(false) end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Melodic Slice Export (One-Shot)...", invoke=PakettiMelodicSliceExport}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Melodic Slice Create Chain...", invoke=PakettiMelodicSliceCreateChain}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Polyend (PTI) Melodic Slice Export Current...", invoke=PakettiMelodicSliceExportCurrent}
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Formats:Export:Polyend (PTI) Save Current Sample as...", invoke = pti_savesample}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Export Subfolders as Melodic Slices...", invoke = PakettiExportSubfoldersAsMelodicSlices}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Export Subfolders as Drum Slices...", invoke = PakettiExportSubfoldersAsDrumSlices}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Save Current as Drumkit (Mono)...", invoke=function() save_pti_as_drumkit_mono(false) end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Save Current as Drumkit (Stereo)...", invoke=function() save_pti_as_drumkit_stereo(false) end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Create 48 Slice Drumkit (Mono)...", invoke=function() pitchBendDrumkitLoader() save_pti_as_drumkit_mono(false) end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Create 48 Slice Drumkit (Stereo)...", invoke=function() pitchBendDrumkitLoader() save_pti_as_drumkit_stereo(false) end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Melodic Slice Export (One-Shot)...", invoke=PakettiMelodicSliceExport}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Melodic Slice Create Chain...", invoke=PakettiMelodicSliceCreateChain}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Polyend (PTI) Melodic Slice Export Current...", invoke=PakettiMelodicSliceExportCurrent}
 
 -- Digitakt Export
-renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Export:Digitakt Export Sample Chain...", invoke = PakettiDigitaktDialog}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Digitakt Quick Export (Mono)...", invoke = PakettiDigitaktExportMono}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Digitakt Quick Export (Stereo)...", invoke = PakettiDigitaktExportStereo}
-renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Export:Digitakt Quick Export (Chain Mode)...", invoke = PakettiDigitaktExportChain}
+renoise.tool():add_menu_entry{name = "--Main Menu:File:Paketti Formats:Export:Digitakt Export Sample Chain...", invoke = PakettiDigitaktDialog}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Digitakt Quick Export (Mono)...", invoke = PakettiDigitaktExportMono}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Digitakt Quick Export (Stereo)...", invoke = PakettiDigitaktExportStereo}
+renoise.tool():add_menu_entry{name = "Main Menu:File:Paketti Formats:Export:Digitakt Quick Export (Chain Mode)...", invoke = PakettiDigitaktExportChain}
 
 -- Octatrack Export
-renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Octatrack Export (.WAV+.ot)...", invoke=function() PakettiOTExport() end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Export (.ot only)...", invoke=function() PakettiOTExportOtOnly() end}
-renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Octatrack Generate Drumkit (Smart Mono/Stereo)...", invoke=function() PakettiOTDrumkitSmart() end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Generate Drumkit (Force Mono)...", invoke=function() PakettiOTDrumkitMono() end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Generate Drumkit (Play to End)...", invoke=function() PakettiOTDrumkitPlayToEnd() end}
-renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Export:Octatrack Generate OctaCycle...", invoke=function() PakettiOctaCycle() end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Quick OctaCycle (C, Oct 1-7)...", invoke=function() PakettiOctaCycleQuick() end}
-renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Export:Octatrack Export OctaCycle...", invoke=function() PakettiOctaCycleExport() end}
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Formats:Export:Octatrack Export (.WAV+.ot)...", invoke=function() PakettiOTExport() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Octatrack Export (.ot only)...", invoke=function() PakettiOTExportOtOnly() end}
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Formats:Export:Octatrack Generate Drumkit (Smart Mono/Stereo)...", invoke=function() PakettiOTDrumkitSmart() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Octatrack Generate Drumkit (Force Mono)...", invoke=function() PakettiOTDrumkitMono() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Octatrack Generate Drumkit (Play to End)...", invoke=function() PakettiOTDrumkitPlayToEnd() end}
+renoise.tool():add_menu_entry{name="--Main Menu:File:Paketti Formats:Export:Octatrack Generate OctaCycle...", invoke=function() PakettiOctaCycle() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Octatrack Quick OctaCycle (C, Oct 1-7)...", invoke=function() PakettiOctaCycleQuick() end}
+renoise.tool():add_menu_entry{name="Main Menu:File:Paketti Formats:Export:Octatrack Export OctaCycle...", invoke=function() PakettiOctaCycleExport() end}
 
 -- ============================================
 -- CONVERSION MENU ENTRIES
