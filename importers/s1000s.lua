@@ -51,8 +51,10 @@ function s1000_loadsample(filename)
   end
   song.selected_instrument:clear()
 
-  -- Load Paketti default instrument configuration
-  pakettiPreferencesDefaultInstrumentLoader()
+  -- Load Paketti default instrument configuration (if enabled)
+  if renoise.tool().preferences.pakettiLoadDefaultInstrument.value then
+    pakettiPreferencesDefaultInstrumentLoader()
+  end
 
   if filename:match("-L.S%d*$") then
     load_it_stereo(filename, filename:gsub("-L(.S%d*)$", "-R%1"))

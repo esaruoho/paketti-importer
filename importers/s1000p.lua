@@ -42,8 +42,10 @@ function s1000_loadinstrument(filename)
     renoise.song().selected_instrument_index = renoise.song().selected_instrument_index + 1
   end
 
-  -- Load Paketti default instrument configuration
-  pakettiPreferencesDefaultInstrumentLoader()
+  -- Load Paketti default instrument configuration (if enabled)
+  if renoise.tool().preferences.pakettiLoadDefaultInstrument.value then
+    pakettiPreferencesDefaultInstrumentLoader()
+  end
 
   for chunk_start=150, ((d:len()/150)-1)*150, 150 do
     print("s1000_loadinstrument: chunk_start", chunk_start)

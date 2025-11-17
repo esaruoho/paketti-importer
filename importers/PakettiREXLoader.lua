@@ -27,9 +27,12 @@ function rex_loadsample(filename)
     renoise.song().selected_instrument_index = renoise.song().selected_instrument_index+1
   end
 
-  pakettiPreferencesDefaultInstrumentLoader()
+  -- Load Paketti default instrument configuration (if enabled)
+  if renoise.tool().preferences.pakettiLoadDefaultInstrument.value then
+    pakettiPreferencesDefaultInstrumentLoader()
+    dprint("Using Paketti default instrument configuration")
+  end
   local smp = song.selected_sample
-  dprint("Using Paketti default instrument configuration")
   
   -- Create temporary AIFF file
   local aiff_copy = os.tmpname() .. ".aiff"

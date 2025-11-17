@@ -107,12 +107,16 @@ function rx2_loadsample(filename)
     print("Using existing instrument at index:", current_index)
   end
 
-  -- Inject the default Paketti instrument configuration if available
-  if pakettiPreferencesDefaultInstrumentLoader then
-    pakettiPreferencesDefaultInstrumentLoader()
-    print("Injected Paketti default instrument configuration")
+  -- Inject the default Paketti instrument configuration if enabled and available
+  if renoise.tool().preferences.pakettiLoadDefaultInstrument.value then
+    if pakettiPreferencesDefaultInstrumentLoader then
+      pakettiPreferencesDefaultInstrumentLoader()
+      print("Injected Paketti default instrument configuration")
+    else
+      print("pakettiPreferencesDefaultInstrumentLoader not found – skipping default configuration")
+    end
   else
-    print("pakettiPreferencesDefaultInstrumentLoader not found – skipping default configuration")
+    print("Default instrument loading is disabled in preferences")
   end
 
   local song = renoise.song()

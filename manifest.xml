@@ -2,12 +2,12 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Paketti File Format Import</Name>
   <Id>org.lackluster.PakettiFileFormatImport</Id>
-  <Version>1.00</Version>
+  <Version>1.21</Version>
   <ApiVersion>6</ApiVersion>
   <Author>Lackluster | esaruoho@icloud.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
   <Category>Importer</Category>
-  <Description>Paketti File Format Imports (.REX, .RX2, .SF2, .PTI for now)</Description>
+  <Description>Paketti File Format Import/Export (.REX, .RX2, .SF2, .PTI, .ITI, .IFF, .8SVX, .16SV, AKAI, SFZ, Octatrack .OT, .STRD, Images, Raw Binary) + PTI/OT/Digitakt Export + Batch SFZ→XRNI + RX2→PTI + Octatrack/Digitakt Drumkit</Description>
   <Homepage>http://patreon.com/esaruoho</Homepage>
   <Platform/>
   <Icon/>

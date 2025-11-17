@@ -9,10 +9,20 @@ require "importers/PakettiIFFLoader"
 require "importers/s1000p"
 require "importers/s1000s"
 require "importers/PakettiPolyendSuite"
+require "importers/PakettiITIImport"
+require "importers/PakettiRawImport"
+require "importers/PakettiSFZBatchConverter"
+require "importers/PakettiOTExport"
+require "importers/PakettiOTSTRDImporter"
+require "importers/PakettiDigitakt"
+if renoise.API_VERSION >= 6.2 then
+  require "importers/PakettiImageToSample"
+end
 -- Paketti preferences
 preferences = renoise.Document.create("ScriptingToolPreferences") {
   pakettiOverwriteCurrent = false,
   pakettiREXBundlePath = "." .. separator .. "rx2",
+  pakettiLoadDefaultInstrument = true,  -- Set to false to skip loading default instrument template
 }
 renoise.tool().preferences = preferences
 
@@ -230,6 +240,20 @@ if renoise.tool():has_file_import_hook("sample", {"pti"}) then
   renoise.tool():remove_file_import_hook("sample", {"pti"})
 end
 
+if renoise.tool():has_file_import_hook("instrument", {"iti"}) then
+  renoise.tool():remove_file_import_hook("instrument", {"iti"})
+end
+
+if renoise.tool():has_file_import_hook("sample", {"exe","dll","bin","sys","dylib"}) then
+  renoise.tool():remove_file_import_hook("sample", {"exe","dll","bin","sys","dylib"})
+end
+
+if renoise.API_VERSION >= 6.2 then
+  if renoise.tool():has_file_import_hook("sample", {"png", "bmp", "jpg", "jpeg", "gif"}) then
+    renoise.tool():remove_file_import_hook("sample", {"png", "bmp", "jpg", "jpeg", "gif"})
+  end
+end
+
 -- Register all hooks directly
 -- AKAI S1000/S3000 Program files
 renoise.tool():add_file_import_hook({
@@ -274,3 +298,197 @@ renoise.tool():add_file_import_hook({
 })
 
 print("Paketti File Format Import tool: All import hooks registered")
+
+-- Preferences Dialog
+function show_paketti_preferences_dialog()
+  local vb = renoise.ViewBuilder()
+  local dialog = nil
+  
+  local dialog_content = vb:column {
+    margin = 10,
+    spacing = 5,
+    
+    vb:text {
+      text = "Paketti Importer Preferences",
+      font = "bold"
+    },
+    
+    vb:space { height = 10 },
+    
+    vb:row {
+      vb:checkbox {
+        value = preferences.pakettiLoadDefaultInstrument.value,
+        notifier = function(value)
+          preferences.pakettiLoadDefaultInstrument.value = value
+          preferences:save_as("preferences.xml")
+          print("pakettiLoadDefaultInstrument set to:", value)
+        end
+      },
+      vb:text {
+        text = "Load Default Instrument (12st_Pitchbend.xrni)"
+      }
+    },
+    
+    vb:row {
+      vb:checkbox {
+        value = preferences.pakettiOverwriteCurrent.value,
+        notifier = function(value)
+          preferences.pakettiOverwriteCurrent.value = value
+          preferences:save_as("preferences.xml")
+          print("pakettiOverwriteCurrent set to:", value)
+        end
+      },
+      vb:text {
+        text = "Overwrite Current Instrument (instead of creating new)"
+      }
+    },
+    
+    vb:space { height = 10 },
+    
+    vb:button {
+      text = "Close",
+      width = 80,
+      notifier = function()
+        if dialog and dialog.visible then
+          dialog:close()
+        end
+      end
+    }
+  }
+  
+  dialog = renoise.app():show_custom_dialog("Paketti Importer Preferences", dialog_content)
+end
+
+-- Add menu entry for preferences in File menu with other Paketti Formats
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Paketti Formats Preferences...",
+  invoke = show_paketti_preferences_dialog
+}
+
+-- File menu entries for all import formats
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .ITI (Impulse Tracker Instrument)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.iti"}, "Select ITI to import")
+    if f and f ~= "" then iti_loadsample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .REX (ReCycle V1)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.rex"}, "Select REX to import")
+    if f and f ~= "" then rex_loadsample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .RX2 (ReCycle V2)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.rx2"}, "Select RX2 to import")
+    if f and f ~= "" then rx2_loadsample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .SF2 (SoundFont 2)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.sf2"}, "Select SF2 to import")
+    if f and f ~= "" then sf2_loadsample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .PTI (Polyend Tracker Instrument)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.pti"}, "Select PTI to import")
+    if f and f ~= "" then pti_loadsample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .IFF (Amiga IFF)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.iff"}, "Select IFF to import")
+    if f and f ~= "" then loadIFFSample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .8SVX (Amiga 8-bit)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.8svx"}, "Select 8SVX to import")
+    if f and f ~= "" then loadIFFSample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .16SV (Amiga 16-bit)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.16sv"}, "Select 16SV to import")
+    if f and f ~= "" then loadIFFSample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .P/.P1/.P3 (AKAI Program)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.p","*.P1","*.P3"}, "Select AKAI Program to import")
+    if f and f ~= "" then s1000_loadinstrument(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import .S/.S1/.S3 (AKAI Sample)...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.s","*.S1","*.S3"}, "Select AKAI Sample to import")
+    if f and f ~= "" then s1000_loadsample(f) end
+  end
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import Raw Binary as Sample...",
+  invoke = function()
+    local f = renoise.app():prompt_for_filename_to_read({"*.exe","*.dll","*.bin","*.sys","*.dylib"}, "Select Binary to import as 8-bit sample")
+    if f and f ~= "" then pakettiLoadExeAsSample(f) end
+  end
+}
+
+if renoise.API_VERSION >= 6.2 then
+  renoise.tool():add_menu_entry {
+    name = "Main Menu:File:Paketti Formats:Import Image as Waveform...",
+    invoke = function()
+      local f = renoise.app():prompt_for_filename_to_read({"*.png","*.bmp","*.jpg","*.jpeg","*.gif"}, "Select Image to convert to waveform")
+      if f and f ~= "" then pakettiImageToSample(f) end
+    end
+  }
+end
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Import Samples from .MOD...",
+  invoke = function()
+    load_samples_from_mod()
+  end
+}
+
+-- Export menu entries
+renoise.tool():add_menu_entry {
+  name = "--Main Menu:File:Paketti Formats:Export Current Sample as .PTI...",
+  invoke = pti_savesample
+}
+
+-- Conversion menu entries
+renoise.tool():add_menu_entry {
+  name = "--Main Menu:File:Paketti Formats:Convert RX2 to PTI...",
+  invoke = rx2_to_pti_convert
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Batch Convert SFZ to XRNI (Save Only)...",
+  invoke = PakettiBatchSFZToXRNI
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:File:Paketti Formats:Batch Convert SFZ to XRNI & Load...",
+  invoke = function() PakettiBatchSFZToXRNI(true) end
+}

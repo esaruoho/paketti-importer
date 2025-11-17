@@ -249,7 +249,10 @@ function pti_loadsample(filepath)
     renoise.song().selected_instrument_index = renoise.song().selected_instrument_index + 1
   end
 
-  pakettiPreferencesDefaultInstrumentLoader()
+  -- Load Paketti default instrument configuration (if enabled)
+  if renoise.tool().preferences.pakettiLoadDefaultInstrument.value then
+    pakettiPreferencesDefaultInstrumentLoader()
+  end
   local smp = renoise.song().selected_instrument.samples[1]
   if not smp then
     renoise.app():show_error("Could not access the instrument's sample slot")

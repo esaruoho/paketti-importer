@@ -198,7 +198,10 @@ function load_samples_from_mod()
       local next_ins = renoise.song().selected_instrument_index + 1
       renoise.song():insert_instrument_at(next_ins)
       renoise.song().selected_instrument_index = next_ins
-      pakettiPreferencesDefaultInstrumentLoader()
+      -- Load Paketti default instrument configuration (if enabled)
+      if renoise.tool().preferences.pakettiLoadDefaultInstrument.value then
+        pakettiPreferencesDefaultInstrumentLoader()
+      end
       local ins = renoise.song().selected_instrument
       
       -- name instrument from .mod
@@ -316,7 +319,10 @@ function pakettiLoadExeAsSample(file_path)
   renoise.song():insert_instrument_at(renoise.song().selected_instrument_index + 1)
   renoise.song().selected_instrument_index =
     renoise.song().selected_instrument_index + 1
-  pakettiPreferencesDefaultInstrumentLoader()
+  -- Load Paketti default instrument configuration (if enabled)
+  if renoise.tool().preferences.pakettiLoadDefaultInstrument.value then
+    pakettiPreferencesDefaultInstrumentLoader()
+  end
 
   local instr = renoise.song().selected_instrument
   instr.name = name

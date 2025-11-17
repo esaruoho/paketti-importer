@@ -280,12 +280,16 @@ function rx2_to_pti_convert()
   renoise.song().selected_instrument_index = current_index + 1
   print("-- Inserted new instrument at index:", renoise.song().selected_instrument_index)
 
-  -- Inject the default Paketti instrument configuration if available
-  if pakettiPreferencesDefaultInstrumentLoader then
-    pakettiPreferencesDefaultInstrumentLoader()
-    print("-- Injected Paketti default instrument configuration")
+  -- Inject the default Paketti instrument configuration if enabled and available
+  if renoise.tool().preferences.pakettiLoadDefaultInstrument.value then
+    if pakettiPreferencesDefaultInstrumentLoader then
+      pakettiPreferencesDefaultInstrumentLoader()
+      print("-- Injected Paketti default instrument configuration")
+    else
+      print("-- pakettiPreferencesDefaultInstrumentLoader not found – skipping default configuration")
+    end
   else
-    print("-- pakettiPreferencesDefaultInstrumentLoader not found – skipping default configuration")
+    print("-- Default instrument loading is disabled in preferences")
   end
 
   local song = renoise.song()
